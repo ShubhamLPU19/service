@@ -10,12 +10,6 @@
     "require": {
          "php": "^7.3|^8.0",
         "doctrine/dbal": "^3.1",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.0",
-        "laravel/passport": "^10.0",
-        "laravel/ui": "^3.0",
-        "spatie/laravel-medialibrary": "^8.7",
-        "yajra/laravel-datatables-oracle": "^9.6",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "fx3costa/laravelchartjs": "^2.8",
