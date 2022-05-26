@@ -18,9 +18,9 @@ class Ticket extends Model implements HasMedia
 
     public $table = 'tickets';
 
-    protected $appends = [
-        'attachments',
-    ];
+    // protected $appends = [
+    //     'attachments',
+    // ];
 
     protected $dates = [
         'created_at',
@@ -61,10 +61,10 @@ class Ticket extends Model implements HasMedia
         return $this->hasMany(Comment::class, 'ticket_id', 'id');
     }
 
-    public function getAttachmentsAttribute()
-    {
-        return $this->getMedia('attachments');
-    }
+    // public function getAttachmentsAttribute()
+    // {
+    //     return $this->getMedia('attachments');
+    // }
 
     public function status()
     {
@@ -117,7 +117,7 @@ class Ticket extends Model implements HasMedia
                     })
                     ->orWhereHas('tickets', function ($q) {
                         return $q->whereId($this->id);
-                    }); 
+                    });
                 });
             })
             ->when(!$comment->user_id && !$this->assigned_to_user_id, function ($q) {

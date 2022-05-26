@@ -16,6 +16,8 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
+use DB;
 
 class TicketsController extends Controller
 {
@@ -24,7 +26,7 @@ class TicketsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Ticket::with(['status', 'priority', 'category', 'assigned_to_user', 'comments'])
+            $query = Ticket::with(['status', 'priority','assigned_to_user', 'comments'])
                 ->filterTickets($request)
                 ->select(sprintf('%s.*', (new Ticket)->table));
             $table = Datatables::of($query);
@@ -50,8 +52,11 @@ class TicketsController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : "";
             });
-            $table->editColumn('title', function ($row) {
-                return $row->title ? $row->title : "";
+            $table->editColumn('state', function ($row) {
+                return $row->state ? $row->state : "";
+            });
+            $table->editColumn('city', function ($row) {
+                return $row->city ? $row->city : "";
             });
             $table->addColumn('status_name', function ($row) {
                 return $row->status ? $row->status->name : '';
@@ -67,26 +72,26 @@ class TicketsController extends Controller
                 return $row->priority ? $row->priority->color : '#000000';
             });
 
-            $table->addColumn('category_name', function ($row) {
-                return $row->category ? $row->category->name : '';
+            $table->addColumn('category', function ($row) {
+                return $row->category ? $row->category : '';
             });
-            $table->addColumn('category_color', function ($row) {
-                return $row->category ? $row->category->color : '#000000';
-            });
+            // $table->addColumn('category_color', function ($row) {
+            //     return $row->category ? $row->category->color : '#000000';
+            // });
 
-            $table->editColumn('author_name', function ($row) {
-                return $row->author_name ? $row->author_name : "";
-            });
-            $table->editColumn('author_email', function ($row) {
-                return $row->author_email ? $row->author_email : "";
-            });
+            // $table->editColumn('author_name', function ($row) {
+            //     return $row->author_name ? $row->author_name : "";
+            // });
+            // $table->editColumn('author_email', function ($row) {
+            //     return $row->author_email ? $row->author_email : "";
+            // });
             $table->addColumn('assigned_to_user_name', function ($row) {
                 return $row->assigned_to_user ? $row->assigned_to_user->name : '';
             });
 
-            $table->addColumn('comments_count', function ($row) {
-                return $row->comments->count();
-            });
+            // $table->addColumn('comments_count', function ($row) {
+            //     return $row->comments->count();
+            // });
 
             $table->addColumn('view_link', function ($row) {
                 return route('admin.tickets.show', $row->id);
@@ -100,8 +105,8 @@ class TicketsController extends Controller
         $priorities = Priority::all();
         $statuses = Status::all();
         $categories = Category::all();
-
-        return view('admin.tickets.index', compact('priorities', 'statuses', 'categories'));
+        $users = User::select("users.*")->join("role_user","users.id","role_user.user_id")->where(["role_user.role_id"=>2])->get();
+        return view('admin.tickets.index', compact('priorities', 'statuses', 'categories','users'));
     }
 
     public function create()
@@ -123,13 +128,52 @@ class TicketsController extends Controller
         return view('admin.tickets.create', compact('statuses', 'priorities', 'categories', 'assigned_to_users'));
     }
 
-    public function store(StoreTicketRequest $request)
+    public function store(Request $request)
     {
-        $ticket = Ticket::create($request->all());
-
-        foreach ($request->input('attachments', []) as $file) {
-            $ticket->addMedia(storage_path('tmp/uploads/' . $file))->toMediaCollection('attachments');
+        // dd($request->all());
+        // $ticket = Ticket::create($request->all());
+        $category = '';
+        if(!empty($request->category1))
+        {
+            $category = "Lock_" . $request->category1;
+        }elseif(!empty($request->category2))
+        {
+            $category = "Paint_" . $request->category2;
+        }elseif(!empty($request->category3))
+        {
+            $category = "Rust_" . $request->category3;
         }
+        if(!empty($request->category1) && !empty($request->category2) && !empty($request->category3))
+        {
+            $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2 . ',' . "Rust_" . $request->category3;
+        }
+        if(!empty($request->category1) && !empty($request->category2))
+        {
+            $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2;
+        }
+        $today_regs = DB::table('tickets')->whereRaw(DB::Raw('Date(tickets.created_at)=CURDATE()'))->count();
+
+        $number = $today_regs + 1;
+        $year = date('Y') % 100;
+        $month = date('m');
+        $day = date('d');
+
+        $reg_num = $year . $month . $day . $number;
+
+        $ticket = new Ticket();
+        $ticket->id = $reg_num;
+        $ticket->customer_name = $request->customer_name;
+        $ticket->customer_mobile = $request->customer_mobile;
+        $ticket->address = $request->address;
+        $ticket->state = $request->state;
+        $ticket->city = $request->city;
+        $ticket->pincode = $request->pincode;
+        $ticket->model = $request->model;
+        $ticket->category = $category;
+        $ticket->status_id = $request->status_id;
+        $ticket->priority_id = $request->priority_id;
+        $ticket->assigned_to_user_id = $request->assigned_to_user_id;
+        $ticket->save();
 
         return redirect()->route('admin.tickets.index');
     }
@@ -151,6 +195,9 @@ class TicketsController extends Controller
             ->prepend(trans('global.pleaseSelect'), '');
 
         $ticket->load('status', 'priority', 'category', 'assigned_to_user');
+        $category1 = DB::table("categories")->where(["parent"=>1])->get();
+        $category2 = DB::table("categories")->where(["parent"=>2])->get();
+        $category3 = DB::table("categories")->where(["parent"=>3])->get();
 
         return view('admin.tickets.edit', compact('statuses', 'priorities', 'categories', 'assigned_to_users', 'ticket'));
     }
@@ -158,23 +205,6 @@ class TicketsController extends Controller
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
         $ticket->update($request->all());
-
-        if (count($ticket->attachments) > 0) {
-            foreach ($ticket->attachments as $media) {
-                if (!in_array($media->file_name, $request->input('attachments', []))) {
-                    $media->delete();
-                }
-            }
-        }
-
-        $media = $ticket->attachments->pluck('file_name')->toArray();
-
-        foreach ($request->input('attachments', []) as $file) {
-            if (count($media) === 0 || !in_array($file, $media)) {
-                $ticket->addMedia(storage_path('tmp/uploads/' . $file))->toMediaCollection('attachments');
-            }
-        }
-
         return redirect()->route('admin.tickets.index');
     }
 
@@ -182,9 +212,10 @@ class TicketsController extends Controller
     {
         abort_if(Gate::denies('ticket_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $ticket->load('status', 'priority', 'category', 'assigned_to_user', 'comments');
-
-        return view('admin.tickets.show', compact('ticket'));
+        $ticket->load('status', 'priority', 'assigned_to_user', 'comments');
+        // dd($ticket);
+        $statuses = Status::all();
+        return view('admin.tickets.show', compact('ticket','statuses'));
     }
 
     public function destroy(Ticket $ticket)
@@ -219,5 +250,11 @@ class TicketsController extends Controller
         $ticket->sendCommentNotification($comment);
 
         return redirect()->back()->withStatus('Your comment added successfully');
+    }
+
+    public function exportTicket(Request $request)
+    {
+        dd($request->all());
+        return Excel::download(new TicketExport,$request->get('agent'),$request->get('status'),$request->get('from'),$request->get('to'),'Tickets.xlsx');
     }
 }

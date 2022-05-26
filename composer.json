@@ -10,20 +10,20 @@
     "require": {
         "php": "^7.3|^8.0",
         "doctrine/dbal": "^3.1",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.0",
-        "laravel/passport": "^10.0",
-        "laravel/ui": "^3.0",
-        "spatie/laravel-medialibrary": "^8.7",
-        "yajra/laravel-datatables-oracle": "^9.6",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "fx3costa/laravelchartjs": "^2.8",
+        "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
+        "laravel/passport": "^10.0",
         "laravel/tinker": "^2.5",
+        "laravel/ui": "^3.0",
+        "maatwebsite/excel": "^3.1",
         "pusher/pusher-php-server": "^7.0",
         "qcod/laravel-app-settings": "^1.4",
-        "spatie/laravel-permission": "^4.2"
+        "spatie/laravel-medialibrary": "^8.7",
+        "spatie/laravel-permission": "^4.2",
+        "yajra/laravel-datatables-oracle": "^9.6"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

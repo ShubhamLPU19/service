@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TicketsController;
 // Route::get('/', 'TicketController@create');
 Route::get('/', function () {
     return redirect(route('login'));
@@ -17,6 +20,7 @@ Auth::routes(['register' => false]);
 Route::post('tickets/media', 'TicketController@storeMedia')->name('tickets.storeMedia');
 Route::post('tickets/comment/{ticket}', 'TicketController@storeComment')->name('tickets.storeComment');
 Route::resource('tickets', 'TicketController')->only(['show', 'create', 'store']);
+Route::post('admin/tickets/export', 'TicketsController@exportTicket')->name('tickets.export');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');

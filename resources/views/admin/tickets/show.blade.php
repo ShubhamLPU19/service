@@ -31,32 +31,38 @@
                             {{ $ticket->created_at }}
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.title') }}
                         </th>
                         <td>
                             {{ $ticket->title }}
                         </td>
+                    </tr> -->
+                    <tr>
+                        <th>
+                            Customer Name
+                        </th>
+                        <td>
+                            {{ $ticket->customer_name }}
+                        </td>
                     </tr>
                     <tr>
+                        <th>
+                            Customer Mobile
+                        </th>
+                        <td>
+                            {{ $ticket->customer_mobile }}
+                        </td>
+                    </tr>
+                    <!-- <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.content') }}
                         </th>
                         <td>
                             {!! $ticket->content !!}
                         </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.attachments') }}
-                        </th>
-                        <td>
-                            @foreach($ticket->attachments as $attachment)
-                                <a href="{{ $attachment->getUrl() }}" target="_blank">{{ $attachment->file_name }}</a>
-                            @endforeach
-                        </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.status') }}
@@ -78,10 +84,10 @@
                             {{ trans('cruds.ticket.fields.category') }}
                         </th>
                         <td>
-                            {{ $ticket->category->name ?? '' }}
+                            {{ $ticket->category ?? '' }}
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.author_name') }}
                         </th>
@@ -96,13 +102,27 @@
                         <td>
                             {{ $ticket->author_email }}
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.assigned_to_user') }}
                         </th>
                         <td>
                             {{ $ticket->assigned_to_user->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                        <div class="form-group ">
+                                <label>Select Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">Select Status</option>
+                                    @foreach($statuses as $status)
+                                        <option value="{{$status->id}}">{{$status->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </td>
                     </tr>
                     <tr>
