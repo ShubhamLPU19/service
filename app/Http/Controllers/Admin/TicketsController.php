@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
+use App\Exports\TicketExport;
 
 class TicketsController extends Controller
 {
@@ -254,7 +255,11 @@ class TicketsController extends Controller
 
     public function exportTicket(Request $request)
     {
-        dd($request->all());
-        return Excel::download(new TicketExport,$request->get('agent'),$request->get('status'),$request->get('from'),$request->get('to'),'Tickets.xlsx');
+        return Excel::download(new TicketExport($request->get('agent'),$request->get('status'),$request->get('from'),$request->get('to')),'Tickets.xlsx');
+    }
+
+    public function testing()
+    {
+        dd("testing");
     }
 }

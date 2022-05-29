@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                <form action="{{route('tickets.export')}}" method="post">
+                <form action="{{route('admin.tickets.export')}}" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-md-3">
