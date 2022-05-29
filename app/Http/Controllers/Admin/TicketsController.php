@@ -247,6 +247,7 @@ class TicketsController extends Controller
             'user_id'       => $user->id,
             'comment_text'  => $request->comment_text
         ]);
+        $ticket = Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status]);
 
         // $ticket->sendCommentNotification($comment);
 

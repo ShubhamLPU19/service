@@ -111,6 +111,8 @@
                             {{ $ticket->assigned_to_user->name ?? '' }}
                         </td>
                     </tr>
+                    <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST">
+                        <input type="hidden" name="ticket_id" value="{{$ticket->id}}">
                     <tr>
                         <th>Status</th>
                         <td>
@@ -119,7 +121,7 @@
                                 <select name="status" class="form-control">
                                     <option value="">Select Status</option>
                                     @foreach($statuses as $status)
-                                        <option value="{{$status->id}}">{{$status->name}}</option>
+                                        <option value="{{$status->id}}" {{$ticket->status_id == $status->id  ? 'selected' : ''}}>{{$status->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -146,7 +148,7 @@
                                 </div>
                                 <hr />
                             @endforelse
-                            <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST">
+                            <!-- <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST"> -->
                                 @csrf
                                 <div class="form-group">
                                     <label for="comment_text">Leave a comment</label>
