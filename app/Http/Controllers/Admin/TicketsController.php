@@ -247,7 +247,7 @@ class TicketsController extends Controller
             'comment_text'  => $request->comment_text
         ]);
 
-        $ticket->sendCommentNotification($comment);
+        // $ticket->sendCommentNotification($comment);
 
         return redirect()->back()->withStatus('Your comment added successfully');
     }

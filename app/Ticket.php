@@ -105,36 +105,36 @@ class Ticket extends Model implements HasMedia
             });
     }
 
-    public function sendCommentNotification($comment)
-    {
-        $users = \App\User::where(function ($q) {
-                $q->whereHas('roles', function ($q) {
-                    return $q->where('title', 'Agent');
-                })
-                ->where(function ($q) {
-                    $q->whereHas('comments', function ($q) {
-                        return $q->whereTicketId($this->id);
-                    })
-                    ->orWhereHas('tickets', function ($q) {
-                        return $q->whereId($this->id);
-                    });
-                });
-            })
-            ->when(!$comment->user_id && !$this->assigned_to_user_id, function ($q) {
-                $q->orWhereHas('roles', function ($q) {
-                    return $q->where('title', 'Admin');
-                });
-            })
-            ->when($comment->user, function ($q) use ($comment) {
-                $q->where('id', '!=', $comment->user_id);
-            })
-            ->get();
-        $notification = new CommentEmailNotification($comment);
+    // public function sendCommentNotification($comment)
+    // {
+    //     $users = \App\User::where(function ($q) {
+    //             $q->whereHas('roles', function ($q) {
+    //                 return $q->where('title', 'Agent');
+    //             })
+    //             ->where(function ($q) {
+    //                 $q->whereHas('comments', function ($q) {
+    //                     return $q->whereTicketId($this->id);
+    //                 })
+    //                 ->orWhereHas('tickets', function ($q) {
+    //                     return $q->whereId($this->id);
+    //                 });
+    //             });
+    //         })
+    //         ->when(!$comment->user_id && !$this->assigned_to_user_id, function ($q) {
+    //             $q->orWhereHas('roles', function ($q) {
+    //                 return $q->where('title', 'Admin');
+    //             });
+    //         })
+    //         ->when($comment->user, function ($q) use ($comment) {
+    //             $q->where('id', '!=', $comment->user_id);
+    //         })
+    //         ->get();
+    //     $notification = new CommentEmailNotification($comment);
 
-        Notification::send($users, $notification);
-        if($comment->user_id && $this->author_email)
-        {
-            Notification::route('mail', $this->author_email)->notify($notification);
-        }
-    }
+    //     Notification::send($users, $notification);
+    //     if($comment->user_id && $this->author_email)
+    //     {
+    //         Notification::route('mail', $this->author_email)->notify($notification);
+    //     }
+    // }
 }
