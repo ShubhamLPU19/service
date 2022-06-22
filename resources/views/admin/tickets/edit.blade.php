@@ -44,11 +44,11 @@
                 <label for="priority">State*</label>
                 <select name="state" id="state" class="form-control select2" required>
                     <option value="">Select State</option>
-                    <option value="Bihar">Bihar</option>
-                    <option value="UP">UP</option>
-                    <option value="Jharkhand">Jharkhand</option>
-                    <option value="West Bengal">West Bengal</option>
-                    <option value="Odisha">Odisha</option>
+                    <option value="Bihar" @if($ticket->state == "Bihar") selected @endif>Bihar</option>
+                    <option value="UP" @if($ticket->state == "UP") selected @endif>UP</option>
+                    <option value="Jharkhand" @if($ticket->state == "Jharkhand") selected @endif>Jharkhand</option>
+                    <option value="West Bengal" @if($ticket->state == "West Bengal") selected @endif>West Bengal</option>
+                    <option value="Odisha" @if($ticket->state == "Odisha") selected @endif>Odisha</option>
                 </select>
                 @if($errors->has('state'))
                     <em class="invalid-feedback">
@@ -89,35 +89,78 @@
                     </em>
                 @endif
             </div>
+            <?php
+            $data = explode(',',$ticket->category);
+            // dd(count($data));
+            if(count($data) == 3)
+            {
+                $cate = explode('_',$data[0]);
+                if($cate[0] == "Lock"){
+                    $category1 = $cate[1];
+                }
+                if($cate[0] == "Paint"){
+                    $category2 = $cate[1];
+                }
+                if($cate[0] == "Rust"){
+                    $category3 = $cate[1];
+                }
+            }
+            if(count($data) == 2)
+            {
+                $cate = explode('_',$data[0]);
+                if($cate[0] == "Lock"){
+                    $category1 = $cate[1];
+                }
+                if($cate[0] == "Paint"){
+                    $category2 = $cate[1];
+                }
+                if($cate[0] == "Rust"){
+                    $category3 = $cate[1];
+                }
+            }
+            if(count($data) == 1)
+            {
+                $cate = explode('_',$data[0]);
+                if($cate[0] == "Lock"){
+                    $category1 = $cate[1];
+                }
+                if($cate[0] == "Paint"){
+                    $category2 = $cate[1];
+                }
+                if($cate[0] == "Rust"){
+                    $category3 = $cate[1];
+                }
+            }
+
+            ?>
             <div class="row">
                 <div class="col-sm-4">
                     <label><strong>Lock</strong></label>
                     <select name="category1" id="category1" class="form-control select2">
                         <option value="">Please Select</option>
-                        @foreach($category1 as $category)
-                        <option value="{{ $category->name }}" {{ (isset($ticket) && $ticket->status ? $ticket->status->id : old('status_id')) == $id ? 'selected' : '' }}>{{ $status }}</option>
-                        @endforeach
-                </select>
+                        <option value="Big Lock" @if(@$category1 == "Big Lock") selected @endif>Big Lock</option>
+                        <option value="Small Lock" @if(@$category1 == "Small Lock") selected @endif>Small Lock</option>
+                    </select>
                 </div>
                 <div class="col-sm-4">
                     <label><strong>Paint</strong></label>
                     <select name="category2" id="category2" class="form-control select2">
                     <option value="">Please Select</option>
-                    <option value="Brown">Brown</option>
-                    <option value="Maroon">Maroon</option>
-                    <option value="Pink">Pink</option>
-                    <option value="Purple">Purple</option>
-                    <option value="Sky Blue">Sky Blue</option>
-                    <option value="White">White</option>
-                    <option value="Ivory">Ivory</option>
-                    <option value="Olive">Olive</option>
+                    <option value="Brown" @if(@$category2 == "Brown") selected @endif>Brown</option>
+                    <option value="Maroon" @if(@$category2 == "Maroon") selected @endif>Maroon</option>
+                    <option value="Pink" @if(@$category2 == "Pink") selected @endif>Pink</option>
+                    <option value="Purple" @if(@$category2 == "Purple") selected @endif>Purple</option>
+                    <option value="Sky Blue" @if(@$category2 == "Sky Blue") selected @endif>Sky Blue</option>
+                    <option value="White" @if(@$category2 == "White") selected @endif>White</option>
+                    <option value="Ivory" @if(@$category2 == "Ivory") selected @endif>Ivory</option>
+                    <option value="Olive" @if(@$category2 == "Olive") selected @endif>Olive</option>
                 </select>
                 </div>
                 <div class="col-sm-4">
                     <label><strong>Rust</strong></label>
                     <select name="category3" id="category3" class="form-control select2">
                     <option value="">Please Select</option>
-                    <option value="Rust">Rust</option>
+                    <option value="Rust" @if(@$category3 == "Rust") selected @endif>Rust</option>
                 </select>
                 </div>
             </div>
@@ -172,7 +215,7 @@
                     {{ trans('cruds.ticket.fields.author_email_helper') }}
                 </p>
             </div> -->
-            @if(auth()->user()->isAdmin())
+            {{-- @if(auth()->user()->isAdmin()) --}}
                 <div class="form-group {{ $errors->has('assigned_to_user_id') ? 'has-error' : '' }}">
                     <label for="assigned_to_user">{{ trans('cruds.ticket.fields.assigned_to_user') }}</label>
                     <select name="assigned_to_user_id" id="assigned_to_user" class="form-control select2" required>
@@ -186,7 +229,7 @@
                         </em>
                     @endif
                 </div>
-            @endif
+            {{-- @endif --}}
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
             </div>

@@ -221,7 +221,7 @@
                     {{ trans('cruds.ticket.fields.author_email_helper') }}
                 </p>
             </div> -->
-            @if(auth()->user()->isAdmin())
+            {{-- @if(auth()->user()->isAdmin()) --}}
                 <div class="form-group {{ $errors->has('assigned_to_user_id') ? 'has-error' : '' }}">
                     <label for="assigned_to_user">{{ trans('cruds.ticket.fields.assigned_to_user') }}</label>
                     <select name="assigned_to_user_id" id="assigned_to_user" class="form-control select2" required>
@@ -235,7 +235,7 @@
                         </em>
                     @endif
                 </div>
-            @endif
+            {{-- @endif --}}
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
             </div>

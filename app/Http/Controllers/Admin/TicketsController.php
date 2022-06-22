@@ -203,9 +203,42 @@ class TicketsController extends Controller
         return view('admin.tickets.edit', compact('statuses', 'priorities', 'categories', 'assigned_to_users', 'ticket'));
     }
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(Request $request,$id)
     {
-        $ticket->update($request->all());
+        $category = '';
+        if(!empty($request->category1))
+        {
+            $category = "Lock_" . $request->category1;
+        }elseif(!empty($request->category2))
+        {
+            $category = "Paint_" . $request->category2;
+        }elseif(!empty($request->category3))
+        {
+            $category = "Rust_" . $request->category3;
+        }
+        if(!empty($request->category1) && !empty($request->category2) && !empty($request->category3))
+        {
+            $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2 . ',' . "Rust_" . $request->category3;
+        }
+        if(!empty($request->category1) && !empty($request->category2))
+        {
+            $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2;
+        }
+        // $ticket->update($request->all());
+        $arr = [
+            "customer_name" => $request->customer_name,
+            "customer_mobile" => $request->customer_mobile,
+            "address" =>$request->address,
+            "state" => $request->state,
+            "city" => $request->city,
+            "pincode" => $request->pincode,
+            "model" => $request->model,
+            "category" => $category,
+            "status_id" => $request->status_id,
+            "priority_id" => $request->priority_id,
+            "assigned_to_user_id" => $request->assigned_to_user_id,
+        ];
+        Ticket::where(["id"=>$id])->update($arr);
         return redirect()->route('admin.tickets.index');
     }
 
