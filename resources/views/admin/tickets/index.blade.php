@@ -105,7 +105,11 @@
                         {{ trans('cruds.ticket.fields.assigned_to_user') }}
                     </th>
                     <th>
-                        &nbsp;
+                        Remark
+                    </th>
+                    <th>
+                        {{-- &nbsp; --}}
+                        Action
                     </th>
                 </tr>
             </thead>
@@ -228,6 +232,7 @@ $('.card-body').on('change', 'select', function() {
 { data: 'customer_name', name: 'customer_name' },
 { data: 'customer_mobile', name: 'customer_mobile' },
 { data: 'assigned_to_user_name', name: 'assigned_to_user.name' },
+{ data: 'remark', name: 'remark'},
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     order: [[ 1, 'desc' ]],
