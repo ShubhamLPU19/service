@@ -128,6 +128,14 @@
                         </td>
                     </tr>
                     <tr>
+                        <th>Remark</th>
+                        <td>
+                        <div class="form-group ">
+                                <textarea type="text" name="remark" rows="3"> {{$ticket->remark}}</textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.comments') }}
                         </th>
@@ -148,7 +156,7 @@
                                 </div>
                                 <hr />
                             @endforelse
-                            <!-- <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST"> -->
+                            {{-- <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST">  --}}
                                 @csrf
                                 <div class="form-group">
                                     <label for="comment_text">Leave a comment</label>
