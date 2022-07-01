@@ -102,7 +102,7 @@ class TicketsController extends Controller
                 return route('admin.tickets.show', $row->id);
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'status', 'priority', 'category', 'assigned_to_user','remark']);
+            $table->rawColumns(['actions', 'placeholder', 'status', 'priority', 'category', 'assigned_to_user']);
 
             return $table->make(true);
         }
@@ -293,7 +293,7 @@ class TicketsController extends Controller
 
     public function exportTicket(Request $request)
     {
-        return Excel::download(new TicketExport($request->get('agent'),$request->get('status'),$request->get('from'),$request->get('to')),'Tickets.xlsx');
+        return Excel::download(new TicketExport($request->get('agent'),$request->get('status'),$request->get('priority'),$request->get('from'),$request->get('to')),'Tickets.xlsx');
     }
 
     public function testing()

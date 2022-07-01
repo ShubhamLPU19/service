@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 @section('content')
 @can('ticket_create')
-    <!-- <div style="margin-bottom: 10px;" class="row">
+    {{-- <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route("admin.tickets.create") }}">
                 {{ trans('global.add') }} {{ trans('cruds.ticket.title_singular') }}
             </a>
         </div>
-    </div> -->
+    </div>  --}}
 @endcan
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -17,7 +17,7 @@
                 <form action="{{route('admin.tickets.export')}}" method="post">
                     @csrf
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group ">
                                 <label>Select Agent</label>
                                 <select name="agent" class="form-control">
@@ -28,13 +28,24 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group ">
                                 <label>Select Status</label>
                                 <select name="status" class="form-control">
-                                    <option value="">Select Status</option>
+                                    <option value="">All Statuses</option>
                                     @foreach($statuses as $status)
                                         <option value="{{$status->id}}">{{$status->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>Select Priority</label>
+                                <select name="priority" class="form-control">
+                                    <option value="">All Priorities</option>
+                                    @foreach($priorities as $priority)
+                                        <option value="{{$priority->id}}">{{$priority->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -104,9 +115,9 @@
                     <th>
                         {{ trans('cruds.ticket.fields.assigned_to_user') }}
                     </th>
-                    <th>
+                    {{-- <th>
                         Remark
-                    </th>
+                    </th> --}}
                     <th>
                         {{-- &nbsp; --}}
                         Action
@@ -232,7 +243,6 @@ $('.card-body').on('change', 'select', function() {
 { data: 'customer_name', name: 'customer_name' },
 { data: 'customer_mobile', name: 'customer_mobile' },
 { data: 'assigned_to_user_name', name: 'assigned_to_user.name' },
-{ data: 'remark', name: 'remark'},
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     order: [[ 1, 'desc' ]],

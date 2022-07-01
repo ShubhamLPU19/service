@@ -15,9 +15,10 @@ class TicketExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     * @return \Illuminate\Support\Collection
     */
 
-    function __construct($agent,$status,$from_date,$to_date) {
+    function __construct($agent,$status,$priority,$from_date,$to_date) {
         $this->agent = $agent;
         $this->status = $status;
+        $this->priority = $priority;
         $this->from = $from_date;
         $this->to = $to_date;
     }
@@ -41,6 +42,9 @@ class TicketExport implements FromCollection, WithHeadings, ShouldAutoSize, With
             }
             if($this->status != ''){
                 $data->where(['tickets.status_id'=>$this->status]);
+            }
+            if(!empty($this->priority)){
+                $data->where(['priorities.id'=>$this->priority]);
             }
             if(!empty($this->agent)){
                 $data->where(['tickets.assigned_to_user_id'=>$this->agent]);
