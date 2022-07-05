@@ -10,7 +10,7 @@
         <form action="{{ route("admin.tickets.store") }}" method="POST" onSubmit="return confirm('Please verify the given data.') " enctype="multipart/form-data">
             @csrf
             <div class="form-group {{ $errors->has('customer_name') ? 'has-error' : '' }}">
-                <label for="title">Customer Name*</label>
+                <label for="title">Customer Name <span style="color: red;">*</span></label>
                 <input type="text" id="customer_name" name="customer_name" class="form-control" value="{{ old('customer_name', isset($ticket) ? $ticket->customer_name : '') }}" required>
                 @if($errors->has('customer_name'))
                     <em class="invalid-feedback">
@@ -19,7 +19,7 @@
                 @endif
             </div>
             <div class="form-group {{ $errors->has('customer_mobile') ? 'has-error' : '' }}">
-                <label for="title">Customer Mobile*</label>
+                <label for="title">Customer Mobile <span style="color: red;">*</span></label>
                 <input type="text" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile', isset($ticket) ? $ticket->customer_mobile : '') }}" required>
                 @if($errors->has('customer_mobile'))
                     <em class="invalid-feedback">
@@ -31,7 +31,7 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
-                <label for="title">Address*</label>
+                <label for="title">Address <span style="color: red;">*</span></label>
                 <textarea type="text" id="address" name="address" class="form-control" required></textarea>
                 @if($errors->has('address'))
                     <em class="invalid-feedback">
@@ -40,7 +40,7 @@
                 @endif
             </div>
             <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                <label for="priority">State*</label>
+                <label for="priority">State <span style="color: red;">*</span></label>
                 <select name="state" id="state" class="form-control select2" required>
                     <option value="">Select State</option>
                     <option value="Bihar">Bihar</option>
@@ -58,7 +58,7 @@
             <div class="row">
                 <div class="col-sm-6">
                         <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
-                        <label for="priority">City*</label>
+                        <label for="priority">City <span style="color: red;">*</span></label>
                         <input type="text" name="city" class="form-control" required>
                         @if($errors->has('city'))
                             <em class="invalid-feedback">
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-sm-6">
                         <div class="form-group {{ $errors->has('pincode') ? 'has-error' : '' }}">
-                        <label for="priority">Pincode*</label>
+                        <label for="priority">Pincode <span style="color: red;">*</span></label>
                         <input type="number" name="pincode" class="form-control" required>
                         @if($errors->has('pincode'))
                             <em class="invalid-feedback">
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="form-group {{ $errors->has('model') ? 'has-error' : '' }}">
-                <label for="title">Model</label>
+                <label for="title">Model </label>
                 <input type="text" id="model" name="model" class="form-control" value="{{ old('model', isset($ticket) ? $ticket->model : '') }}">
                 @if($errors->has('model'))
                     <em class="invalid-feedback">
@@ -171,7 +171,7 @@
                 </p>
             </div> -->
             <div class="form-group {{ $errors->has('status_id') ? 'has-error' : '' }}">
-                <label for="status">{{ trans('cruds.ticket.fields.status') }}*</label>
+                <label for="status" style="margin-top: 12px;">{{ trans('cruds.ticket.fields.status') }} <span style="color: red;">*</span></label>
                 <select name="status_id" id="status" class="form-control select2" required>
                     @foreach($statuses as $id => $status)
                         <option value="{{ $id }}" {{ (isset($ticket) && $ticket->status ? $ticket->status->id : old('status_id')) == $id ? 'selected' : '' }}>{{ $status }}</option>
@@ -184,7 +184,7 @@
                 @endif
             </div>
             <div class="form-group {{ $errors->has('priority_id') ? 'has-error' : '' }}">
-                <label for="priority">{{ trans('cruds.ticket.fields.priority') }}*</label>
+                <label for="priority">{{ trans('cruds.ticket.fields.priority') }} <span style="color: red;">*</span></label>
                 <select name="priority_id" id="priority" class="form-control select2" required>
                     @foreach($priorities as $id => $priority)
                         <option value="{{ $id }}" {{ (isset($ticket) && $ticket->priority ? $ticket->priority->id : old('priority_id')) == $id ? 'selected' : '' }}>{{ $priority }}</option>
@@ -223,7 +223,7 @@
             </div> -->
             {{-- @if(auth()->user()->isAdmin()) --}}
                 <div class="form-group {{ $errors->has('assigned_to_user_id') ? 'has-error' : '' }}">
-                    <label for="assigned_to_user">{{ trans('cruds.ticket.fields.assigned_to_user') }}</label>
+                    <label for="assigned_to_user">{{ trans('cruds.ticket.fields.assigned_to_user') }} <span style="color: red;">*</span></label>
                     <select name="assigned_to_user_id" id="assigned_to_user" class="form-control select2" required>
                         @foreach($assigned_to_users as $id => $assigned_to_user)
                             <option value="{{ $id }}" {{ (isset($ticket) && $ticket->assigned_to_user ? $ticket->assigned_to_user->id : old('assigned_to_user_id')) == $id ? 'selected' : '' }}>{{ $assigned_to_user }}</option>

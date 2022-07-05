@@ -19,6 +19,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
 use App\Exports\TicketExport;
+use Illuminate\Support\Facades\Http;
 
 class TicketsController extends Controller
 {
@@ -179,6 +180,43 @@ class TicketsController extends Controller
         $ticket->priority_id = $request->priority_id;
         $ticket->assigned_to_user_id = $request->assigned_to_user_id;
         $ticket->save();
+        if(!empty($ticket->id))
+        {
+            $agent = User::where(["id"=>$request->assigned_to_user_id])->first();
+            $headers = array(
+                "Content-Type" => 'application/json',
+                "Authorization"=> 'Basic WmN1a0VfLUJEYmdEZXVnMHhVVlZfYVNueFdsaTE1Z2pHSk12M1pDSjA4QTo='
+            );
+            $apiURL = 'https://api.interakt.ai/v1/public/track/users/';
+            $postInput = array(
+                "phoneNumber"=> $request->customer_mobile,
+                "countryCode"=> "+91",
+                "traits"=> array(
+                    "name"=> $request->customer_name,
+                    "ticket_id"=> $ticket->id,
+                    "agent_name" => @$agent->name,
+                    "createdAt"=> date("Y-m-d"),
+                )
+            );
+            $response = Http::withHeaders($headers)->post($apiURL, $postInput);
+            $responseBody = json_decode($response->getBody(), true);
+            if($responseBody['result'])
+            {
+                $eventApiURL = 'https://api.interakt.ai/v1/public/track/events/';
+                $postEventInput = array(
+                    "phoneNumber"=> $request->customer_mobile,
+                    "countryCode"=> "+91",
+                    "event"=> "Ticket Create",
+                    "traits"=> array(
+                        "ticket_id"=> $ticket->id,
+                        "agent_name" => @$agent->name,
+                    )
+                );
+
+                $response = Http::withHeaders($headers)->post($eventApiURL, $postEventInput);
+                $responseBody = json_decode($response->getBody(), true);
+            }
+        }
 
         return redirect()->route('admin.tickets.index');
     }
