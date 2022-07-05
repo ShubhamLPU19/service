@@ -195,6 +195,7 @@ class TicketsController extends Controller
                     "name"=> $request->customer_name,
                     "ticket_id"=> $ticket->id,
                     "agent_name" => @$agent->name,
+                    "issue" => $category,
                     "createdAt"=> date("Y-m-d"),
                 )
             );
@@ -210,6 +211,7 @@ class TicketsController extends Controller
                     "traits"=> array(
                         "ticket_id"=> $ticket->id,
                         "agent_name" => @$agent->name,
+                        "issue" => $category,
                     )
                 );
 
