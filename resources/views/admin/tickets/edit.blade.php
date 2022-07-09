@@ -91,31 +91,38 @@
             </div>
             <?php
             $data = explode(',',$ticket->category);
-            // dd(count($data));
+            //dd(($data));
             if(count($data) == 3)
             {
-                $cate = explode('_',$data[0]);
-                if($cate[0] == "Lock"){
-                    $category1 = $cate[1];
+                $cate1 = explode('_',$data[0]);
+                $cate2 = explode('_',$data[1]);
+                $cate3 = explode('_',$data[2]);
+                if($cate1[0] == "Lock"){
+                    $category1 = $cate1[1];
                 }
-                if($cate[0] == "Paint"){
-                    $category2 = $cate[1];
+                if($cate2[0] == "Paint"){
+                    $category2 = $cate2[1];
                 }
-                if($cate[0] == "Rust"){
-                    $category3 = $cate[1];
+                if($cate3[0] == "Rust"){
+                    $category3 = $cate3[1];
                 }
             }
             if(count($data) == 2)
             {
-                $cate = explode('_',$data[0]);
-                if($cate[0] == "Lock"){
-                    $category1 = $cate[1];
+                $cate1 = explode('_',$data[0]);
+                $cate2 = explode('_',$data[1]);
+                //dd($cate);
+                if($cate1[0] == "Lock"){
+                    $category1 = $cate1[1];
                 }
-                if($cate[0] == "Paint"){
-                    $category2 = $cate[1];
+                if($cate2[0] == "Paint"){
+                    $category2 = $cate2[1];
                 }
-                if($cate[0] == "Rust"){
-                    $category3 = $cate[1];
+                if($cate1[0] == "Paint"){
+                    $category2 = $cate2[1];
+                }
+                if($cate1[0] == "Rust"){
+                    $category3 = $cate1[1];
                 }
             }
             if(count($data) == 1)
@@ -190,31 +197,6 @@
                     </em>
                 @endif
             </div>
-
-            <!-- <div class="form-group {{ $errors->has('author_name') ? 'has-error' : '' }}">
-                <label for="author_name">{{ trans('cruds.ticket.fields.author_name') }}</label>
-                <input type="text" id="author_name" name="author_name" class="form-control" value="{{ old('author_name', isset($ticket) ? $ticket->author_name : '') }}">
-                @if($errors->has('author_name'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('author_name') }}
-                    </em>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.ticket.fields.author_name_helper') }}
-                </p>
-            </div> -->
-            <!-- <div class="form-group {{ $errors->has('author_email') ? 'has-error' : '' }}">
-                <label for="author_email">{{ trans('cruds.ticket.fields.author_email') }}</label>
-                <input type="text" id="author_email" name="author_email" class="form-control" value="{{ old('author_email', isset($ticket) ? $ticket->author_email : '') }}">
-                @if($errors->has('author_email'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('author_email') }}
-                    </em>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.ticket.fields.author_email_helper') }}
-                </p>
-            </div> -->
             {{-- @if(auth()->user()->isAdmin()) --}}
                 <div class="form-group {{ $errors->has('assigned_to_user_id') ? 'has-error' : '' }}">
                     <label for="assigned_to_user">{{ trans('cruds.ticket.fields.assigned_to_user') }} <span style="color: red;">*</span></label>

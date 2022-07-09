@@ -113,6 +113,22 @@
                     </tr>
                     <form action="{{ route('admin.tickets.storeComment', $ticket->id) }}" method="POST">
                         <input type="hidden" name="ticket_id" value="{{$ticket->id}}">
+                    @if(auth()->user()->isAgent())
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                        <div class="form-group ">
+                                <label>Select Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">Select Status</option>
+                                        <option value="3" {{$ticket->status_id == 3  ? 'selected' : ''}}>Process</option>
+                                        <option value="5" {{$ticket->status_id == 5  ? 'selected' : ''}}>On Hold</option>
+                                        <option value="4" {{$ticket->status_id == 4  ? 'selected' : ''}}>Complete</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    @else
                     <tr>
                         <th>Status</th>
                         <td>
@@ -127,14 +143,15 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
+                    @endif
+                    {{-- <tr>
                         <th>Remark</th>
                         <td>
                         <div class="form-group ">
                                 <textarea type="text" name="remark" rows="3"> {{$ticket->remark}}</textarea>
                             </div>
                         </td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.comments') }}

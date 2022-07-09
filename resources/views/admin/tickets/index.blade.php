@@ -9,6 +9,7 @@
         </div>
     </div>  --}}
 @endcan
+@if(auth()->user()->isAdmin() || auth()->user()->isExecutive())
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -74,12 +75,15 @@
         </div>
     </div>
 </div>
+@endif
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.ticket.title_singular') }} {{ trans('global.list') }}
+         @if(auth()->user()->isAdmin() || auth()->user()->isExecutive())
         <a class="btn btn-success" style="float:right;" href="{{ route("admin.tickets.create") }}">
             {{ trans('global.add') }} {{ trans('cruds.ticket.title_singular') }}
         </a>
+        @endif
     </div>
     <div class="card-body">
         <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Ticket">

@@ -32,6 +32,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'mobile',
         'password',
         'created_at',
         'updated_at',
@@ -80,5 +81,15 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->roles->contains(1);
+    }
+
+    public function isExecutive()
+    {
+        return $this->roles->contains(3);
+    }
+
+    public function isAgent()
+    {
+        return $this->roles->contains(2);
     }
 }
