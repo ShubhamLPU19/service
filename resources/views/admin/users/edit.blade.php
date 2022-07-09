@@ -35,7 +35,7 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                <label for="mobile">{{ trans('cruds.user.fields.email') }}*</label>
+                <label for="mobile">Mobile*</label>
                 <input type="text" id="mobile" name="mobile" class="form-control" value="{{ old('mobile', isset($user) ? $user->mobile : '') }}" required>
                 @if($errors->has('mobile'))
                     <em class="invalid-feedback">
