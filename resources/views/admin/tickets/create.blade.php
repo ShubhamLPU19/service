@@ -20,7 +20,7 @@
             </div>
             <div class="form-group {{ $errors->has('customer_mobile') ? 'has-error' : '' }}">
                 <label for="title">Customer Mobile <span style="color: red;">*</span></label>
-                <input type="text" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile', isset($ticket) ? $ticket->customer_mobile : '') }}" required>
+                <input type="tel" maxlength="10" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile', isset($ticket) ? $ticket->customer_mobile : '') }}" required>
                 @if($errors->has('customer_mobile'))
                     <em class="invalid-feedback">
                         {{ $errors->first('customer_mobile') }}
@@ -70,7 +70,7 @@
                 <div class="col-sm-6">
                         <div class="form-group {{ $errors->has('pincode') ? 'has-error' : '' }}">
                         <label for="priority">Pincode <span style="color: red;">*</span></label>
-                        <input type="number" name="pincode" class="form-control" required>
+                        <input type="tel" maxlength="6" name="pincode" class="form-control" required>
                         @if($errors->has('pincode'))
                             <em class="invalid-feedback">
                                 {{ $errors->first('pincode') }}

@@ -6,7 +6,7 @@
             <div class="card-body p-4">
                 <img src="http://sangamalmirah.com/wp-content/uploads/2020/11/sangam-almirah-logo.bmp" style="margin-left: 140px;">
                 <!-- <h1>{{ trans('panel.site_title') }}</h1> -->
-
+{{-- {{URL::asset('/image/propic.png')}} --}}
                 <p class="text-muted">{{ trans('global.login') }}</p>
 
                 @if(session('status'))

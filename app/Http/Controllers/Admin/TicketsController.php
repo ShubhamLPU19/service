@@ -29,6 +29,7 @@ class TicketsController extends Controller
     {
         if ($request->ajax()) {
             $query = Ticket::with(['status', 'priority','assigned_to_user', 'comments'])
+                // ->where("tickets.status_id","!=",6)
                 ->filterTickets($request)
                 ->select(sprintf('%s.*', (new Ticket)->table));
             $table = Datatables::of($query);
@@ -77,16 +78,6 @@ class TicketsController extends Controller
             $table->addColumn('category', function ($row) {
                 return $row->category ? $row->category : '';
             });
-            // $table->addColumn('category_color', function ($row) {
-            //     return $row->category ? $row->category->color : '#000000';
-            // });
-
-            // $table->editColumn('author_name', function ($row) {
-            //     return $row->author_name ? $row->author_name : "";
-            // });
-            // $table->editColumn('author_email', function ($row) {
-            //     return $row->author_email ? $row->author_email : "";
-            // });
             $table->addColumn('assigned_to_user_name', function ($row) {
                 return $row->assigned_to_user ? $row->assigned_to_user->name : '';
             });
@@ -111,7 +102,7 @@ class TicketsController extends Controller
         $priorities = Priority::all();
         $statuses = Status::all();
         $categories = Category::all();
-        $users = User::select("users.*")->join("role_user","users.id","role_user.user_id")->where(["role_user.role_id"=>2])->get();
+        $users = User::select("users.*")->join("role_user","users.id","role_user.user_id")->where(["users.status"=>"active"])->where(["role_user.role_id"=>2])->get();
         return view('admin.tickets.index', compact('priorities', 'statuses', 'categories','users'));
     }
 
@@ -128,6 +119,7 @@ class TicketsController extends Controller
         $assigned_to_users = User::whereHas('roles', function($query) {
                 $query->whereId(2);
             })
+            ->where(["users.status"=>"active"])
             ->pluck('name', 'id')
             ->prepend(trans('global.pleaseSelect'), '');
 
@@ -164,6 +156,10 @@ class TicketsController extends Controller
         if(!empty($request->category1) && !empty($request->category2) && !empty($request->category3))
         {
             $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2 . ',' . "Rust_" . $request->category3;
+        }
+        if(empty($request->category1) && empty($request->category2) && empty($request->category3))
+        {
+            return redirect()->back()->with('message', 'Please select problem.');
         }
         $today_regs = DB::table('tickets')->whereRaw(DB::Raw('Date(tickets.created_at)=CURDATE()'))->count();
 
@@ -267,6 +263,7 @@ class TicketsController extends Controller
         $assigned_to_users = User::whereHas('roles', function($query) {
                 $query->whereId(2);
             })
+            ->where(["users.status"=>"active"])
             ->pluck('name', 'id')
             ->prepend(trans('global.pleaseSelect'), '');
 
@@ -306,6 +303,10 @@ class TicketsController extends Controller
         if(!empty($request->category1) && !empty($request->category2) && !empty($request->category3))
         {
             $category = "Lock_" . $request->category1 . ',' . "Paint_" . $request->category2 . ',' . "Rust_" . $request->category3;
+        }
+        if(empty($request->category1) && empty($request->category2) && empty($request->category3))
+        {
+            return redirect()->back()->with('message', 'Please select problem.');
         }
         // $ticket->update($request->all());
         $arr = [
@@ -404,13 +405,14 @@ class TicketsController extends Controller
             'comment_text' => 'required'
         ]);
         $user = auth()->user();
-        $comment = $ticket->comments()->create([
-            'author_name'   => $user->name,
-            'author_email'  => $user->email,
-            'user_id'       => $user->id,
-            'comment_text'  => $request->comment_text
-        ]);
-        Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status,"remark"=>$request->remark]);
+        // $comment = $ticket->comments()->create([
+        //     'author_name'   => $user->name,
+        //     'author_email'  => $user->email,
+        //     'user_id'       => $user->id,
+        //     'comment_text'  => $request->comment_text,
+        //     // 'ticket_id'   => $ticket->id,
+        // ]);
+        Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status]);
         $ticket = Ticket::where(["id"=>$request->ticket_id])->first();
         if($request->status == 3 || $request->status == 5)
         {
@@ -458,6 +460,14 @@ class TicketsController extends Controller
                 }
             }
         }
+        if($request->status == 4)
+        {
+            $otp = random_int(100000, 999999);
+            Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status,"otp"=>$otp]);
+            $ticket->load('status', 'priority', 'assigned_to_user');
+            $statuses = Status::all();
+            return view('admin.tickets.otp', compact('ticket','statuses'));
+        }
         // $ticket->sendCommentNotification($comment);
 
         return redirect()->back()->withStatus('Your comment added successfully');
@@ -468,8 +478,18 @@ class TicketsController extends Controller
         return Excel::download(new TicketExport($request->get('agent'),$request->get('status'),$request->get('priority'),$request->get('from'),$request->get('to')),'Tickets.xlsx');
     }
 
-    public function testing()
+    public function ticketClose(Request $request)
     {
-        dd("testing");
+        $ticket = Ticket::where(['id'=>$request->ticket_id])->first();
+        if($ticket->otp == $request->otp)
+        {
+            Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>6,"otp"=>null]);
+            return redirect()->route('admin.tickets.index')->withStatus('Ticket is closed successfully');
+        }
+        else
+        {
+            \Redirect::back()->withMessage('Profile saved!');
+        }
+
     }
 }

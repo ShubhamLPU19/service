@@ -33,6 +33,8 @@ class User extends Authenticatable
         'name',
         'email',
         'mobile',
+        'work_location',
+        'status',
         'password',
         'created_at',
         'updated_at',
