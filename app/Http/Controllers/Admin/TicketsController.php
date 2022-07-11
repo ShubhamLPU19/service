@@ -466,6 +466,53 @@ class TicketsController extends Controller
             Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status,"otp"=>$otp]);
             $ticket->load('status', 'priority', 'assigned_to_user');
             $statuses = Status::all();
+            $ticket = Ticket::where(["id"=>$request->ticket_id])->first();
+            if(!empty($ticket) )
+            {
+                $status = Status::where(["id"=>$request->status_id])->first();
+                $agent = User::where(["id"=>$ticket->assigned_to_user_id])->first();
+                $headers = array(
+                    "Content-Type" => 'application/json',
+                    "Authorization"=> 'Basic WmN1a0VfLUJEYmdEZXVnMHhVVlZfYVNueFdsaTE1Z2pHSk12M1pDSjA4QTo='
+                );
+                $apiURL = 'https://api.interakt.ai/v1/public/track/users/';
+                $postInput = array(
+                    "phoneNumber"=> $ticket->customer_mobile,
+                    "countryCode"=> "+91",
+                    "traits"=> array(
+                        "name"=> $ticket->customer_name,
+                        "ticket_id"=> $ticket->id,
+                        "agent_name" => @$agent->name,
+                        "agent_contact" => @$agent->mobile,
+                        "status" => @$status->name,
+                        "issue"  => $ticket->category,
+                        "createdAt"=> date("Y-m-d"),
+                        "otp" => $otp,
+                    )
+                );
+                $response = Http::withHeaders($headers)->post($apiURL, $postInput);
+                $responseBody = json_decode($response->getBody(), true);
+                if($responseBody['result'])
+                {
+                    $eventApiURL = 'https://api.interakt.ai/v1/public/track/events/';
+                    $postEventInput = array(
+                        "phoneNumber"=> $ticket->customer_mobile,
+                        "countryCode"=> "+91",
+                        "event"=> "Complete",
+                        "traits"=> array(
+                            "ticket_id"=> $ticket->id,
+                            "agent_name" => @$agent->name,
+                            "agent_contact" => @$agent->mobile,
+                            "status" => @$status->name,
+                            "issue"  => $ticket->category,
+                            "otp" => $otp,
+                        )
+                    );
+
+                    $response = Http::withHeaders($headers)->post($eventApiURL, $postEventInput);
+                    $responseBody = json_decode($response->getBody(), true);
+                }
+            }
             return view('admin.tickets.otp', compact('ticket','statuses'));
         }
         // $ticket->sendCommentNotification($comment);
