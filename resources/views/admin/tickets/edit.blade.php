@@ -31,15 +31,6 @@
                     {{ trans('cruds.ticket.fields.title_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
-                <label for="title">Address <span style="color: red;">*</span></label>
-                <textarea type="text" id="address" name="address" class="form-control" required>{{ old('address', isset($ticket) ? $ticket->address : '') }}</textarea>
-                @if($errors->has('address'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('address') }}
-                    </em>
-                @endif
-            </div>
             <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                 <label for="priority">State <span style="color: red;">*</span></label>
                 <select name="state" id="state" class="form-control select2" required>
@@ -79,6 +70,28 @@
                         @endif
                     </div>
                 </div>
+            </div>
+            <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
+                <label for="title">Address <span style="color: red;">*</span></label>
+                <textarea type="text" id="address" name="address" class="form-control" required>{{ old('address', isset($ticket) ? $ticket->address : '') }}</textarea>
+                @if($errors->has('address'))
+                    <em class="invalid-feedback">
+                        {{ $errors->first('address') }}
+                    </em>
+                @endif
+            </div>
+            <div class="form-group {{ $errors->has('product_warranty') ? 'has-error' : '' }}">
+                <label for="product_warranty">Product Warranty<span style="color: red;">*</span></label>
+                <select name="product_warranty" id="product_warranty" class="form-control" required>
+                    <option value="">Select Warranty</option>
+                    <option value="yes" @if($ticket->product_warranty == "yes") selected @endif>Yes</option>
+                    <option value="no" @if($ticket->product_warranty == "no") selected @endif>No</option>
+                </select>
+                @if($errors->has('product_warranty'))
+                    <em class="invalid-feedback">
+                        {{ $errors->first('product_warranty') }}
+                    </em>
+                @endif
             </div>
             <div class="form-group {{ $errors->has('model') ? 'has-error' : '' }}">
                 <label for="title">Model</label>
@@ -142,15 +155,15 @@
             ?>
             <div class="row">
                 <div class="col-sm-4">
-                    <label><strong>Lock</strong></label>
+                    <label>Lock</label>
                     <select name="category1" id="category1" class="form-control select2">
                         <option value="">Please Select</option>
-                        <option value="Big Lock" @if(@$category1 == "Big Lock") selected @endif>Big Lock</option>
+                        <option value="Main Lock" @if(@$category1 == "Main Lock") selected @endif>Main Lock</option>
                         <option value="Small Lock" @if(@$category1 == "Small Lock") selected @endif>Small Lock</option>
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <label><strong>Paint</strong></label>
+                    <label>Paint</label>
                     <select name="category2" id="category2" class="form-control select2">
                     <option value="">Please Select</option>
                     <option value="Brown" @if(@$category2 == "Brown") selected @endif>Brown</option>
@@ -164,7 +177,7 @@
                 </select>
                 </div>
                 <div class="col-sm-4">
-                    <label><strong>Rust</strong></label>
+                    <label>Body</label>
                     <select name="category3" id="category3" class="form-control select2">
                     <option value="">Please Select</option>
                     <option value="Rust" @if(@$category3 == "Rust") selected @endif>Rust</option>

@@ -98,17 +98,17 @@
                     <th>
                         State
                     </th>
-                    <!-- <th>
-                        City
-                    </th> -->
+                    <th>
+                        Address
+                    </th>
                     <th>
                         {{ trans('cruds.ticket.fields.status') }}
                     </th>
-                    <th>
+                    {{-- <th>
                         {{ trans('cruds.ticket.fields.priority') }}
-                    </th>
+                    </th> --}}
                     <th>
-                        Category
+                        Issue
                     </th>
                     <th>
                        Customer Name
@@ -117,7 +117,7 @@
                         Customer Mobile
                     </th>
                     <th>
-                        {{ trans('cruds.ticket.fields.assigned_to_user') }}
+                        Assigned To Agent
                     </th>
                     {{-- <th>
                         Remark
@@ -224,19 +224,24 @@ $('.card-body').on('change', 'select', function() {
     // }
 },
 {
+    data: 'address',
+    name: 'address',
+},
+
+{
   data: 'status_name',
   name: 'status.name',
   render: function ( data, type, row) {
       return '<span style="color:'+row.status_color+'">'+data+'</span>';
   }
 },
-{
-  data: 'priority_name',
-  name: 'priority.name',
-  render: function ( data, type, row) {
-      return '<span style="color:'+row.priority_color+'">'+data+'</span>';
-  }
-},
+//{
+  //data: 'priority_name',
+  //name: 'priority.name',
+  //render: function ( data, type, row) {
+    //  return '<span style="color:'+row.priority_color+'">'+data+'</span>';
+  //}
+//},
 {
   data: 'category',
   name: 'category',

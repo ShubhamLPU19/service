@@ -18,9 +18,7 @@ class Ticket extends Model implements HasMedia
 
     public $table = 'tickets';
 
-    // protected $appends = [
-    //     'attachments',
-    // ];
+    public $incrementing = false;
 
     protected $dates = [
         'created_at',

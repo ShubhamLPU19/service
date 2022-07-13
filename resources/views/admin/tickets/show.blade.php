@@ -186,6 +186,28 @@
                 </tbody>
             </table>
         </div>
+        @if(auth()->user()->isAdmin() || auth()->user()->isExecutive())
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Ticket Id</th>
+                <th scope="col">Action Performed By</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($ticket_history as $history)
+                <tr>
+                    <td>{{$history->ticket_id}}</td>
+                    <td>{{$history->name}}</td>
+                    <td>{{$history->status}}</td>
+                    <td>{{date('l d F Y h:i A',strtotime($history->created_at))}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @endif
         <a class="btn btn-default my-2" href="{{ route('admin.tickets.index') }}">
             {{ trans('global.back_to_list') }}
         </a>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketsController;
+use App\Http\Controllers\ServiceController;
 // Route::get('/', 'TicketController@create');
 Route::get('/', function () {
     return redirect(route('login'));
@@ -20,6 +21,8 @@ Auth::routes(['register' => false]);
 Route::post('tickets/media', 'TicketController@storeMedia')->name('tickets.storeMedia');
 Route::post('tickets/comment/{ticket}', 'TicketController@storeComment')->name('tickets.storeComment');
 Route::resource('tickets', 'TicketController')->only(['show', 'create', 'store']);
+Route::get('complaint','ServiceController@createComplaint')->name('createComplaint');
+Route::post('complaint/store','ServiceController@storeComplaint')->name('storeComplaint');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
