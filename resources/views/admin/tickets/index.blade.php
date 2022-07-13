@@ -99,6 +99,9 @@
                         State
                     </th>
                     <th>
+                        City
+                    </th>
+                    <th>
                         Address
                     </th>
                     <th>
@@ -219,6 +222,10 @@ $('.card-body').on('change', 'select', function() {
 {
     data: 'state',
     name: 'state',
+},
+{
+    data: 'city',
+    name: 'city',
     // render: function ( data, type, row) {
     //     return '<a href="'+row.view_link+'">'+data+' ('+row.comments_count+')</a>';
     // }
