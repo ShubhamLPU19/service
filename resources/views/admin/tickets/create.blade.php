@@ -18,17 +18,32 @@
                     </em>
                 @endif
             </div>
-            <div class="form-group {{ $errors->has('customer_mobile') ? 'has-error' : '' }}">
-                <label for="title">Customer Mobile <span style="color: red;">*</span></label>
-                <input type="tel" maxlength="10" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile', isset($ticket) ? $ticket->customer_mobile : '') }}" required>
-                @if($errors->has('customer_mobile'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('customer_mobile') }}
-                    </em>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.ticket.fields.title_helper') }}
-                </p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group {{ $errors->has('customer_mobile') ? 'has-error' : '' }}">
+                        <label for="title">Customer Mobile <span style="color: red;">*</span></label>
+                        <input type="tel" maxlength="10" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile', isset($ticket) ? $ticket->customer_mobile : '') }}" required>
+                        @if($errors->has('customer_mobile'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('customer_mobile') }}
+                            </em>
+                        @endif
+                        <p class="helper-block">
+                            {{ trans('cruds.ticket.fields.title_helper') }}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                        <div class="form-group {{ $errors->has('customer_alternate_mobile') ? 'has-error' : '' }}">
+                        <label for="priority">Alternate Mobile (Optional) <span style="color: red;"></span></label>
+                        <input type="tel" maxlength="10" name="customer_alternate_mobile" class="form-control">
+                        @if($errors->has('pincode'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('customer_alternate_mobile') }}
+                            </em>
+                        @endif
+                    </div>
+                </div>
             </div>
             <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                 <label for="priority">State <span style="color: red;">*</span></label>
@@ -60,8 +75,8 @@
                 </div>
                 <div class="col-sm-6">
                         <div class="form-group {{ $errors->has('pincode') ? 'has-error' : '' }}">
-                        <label for="priority">Pincode <span style="color: red;">*</span></label>
-                        <input type="tel" maxlength="6" name="pincode" class="form-control" required>
+                        <label for="priority">Pincode <span style="color: red;"></span></label>
+                        <input type="tel" maxlength="6" name="pincode" class="form-control">
                         @if($errors->has('pincode'))
                             <em class="invalid-feedback">
                                 {{ $errors->first('pincode') }}

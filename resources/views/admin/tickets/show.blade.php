@@ -17,7 +17,7 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.ticket.fields.id') }}
+                            Ticket Id
                         </th>
                         <td>
                             {{ $ticket->id }}
@@ -28,17 +28,9 @@
                             {{ trans('cruds.ticket.fields.created_at') }}
                         </th>
                         <td>
-                            {{ $ticket->created_at }}
+                            {{ date('l d F Y h:i A',strtotime($ticket->created_at))}}
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.title') }}
-                        </th>
-                        <td>
-                            {{ $ticket->title }}
-                        </td>
-                    </tr> -->
                     <tr>
                         <th>
                             Customer Name
@@ -55,14 +47,38 @@
                             {{ $ticket->customer_mobile }}
                         </td>
                     </tr>
-                    <!-- <tr>
+                    <tr>
                         <th>
-                            {{ trans('cruds.ticket.fields.content') }}
+                            Alternate Mobile
                         </th>
                         <td>
-                            {!! $ticket->content !!}
+                            {{ $ticket->customer_alternate_mobile }}
                         </td>
-                    </tr> -->
+                    </tr>
+                    <tr>
+                        <th>
+                            State
+                        </th>
+                        <td>
+                            {{$ticket->state}}
+                        </td>
+                    </tr>
+                     <tr>
+                        <th>
+                            City
+                        </th>
+                        <td>
+                            {{strtoupper($ticket->city)}}
+                        </td>
+                    </tr>
+                     <tr>
+                        <th>
+                            Address
+                        </th>
+                        <td>
+                            {{strtoupper($ticket->address)}}
+                        </td>
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.ticket.fields.status') }}
@@ -81,31 +97,15 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.ticket.fields.category') }}
+                            Issue
                         </th>
                         <td>
                             {{ $ticket->category ?? '' }}
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.author_name') }}
-                        </th>
-                        <td>
-                            {{ $ticket->author_name }}
-                        </td>
-                    </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.ticket.fields.author_email') }}
-                        </th>
-                        <td>
-                            {{ $ticket->author_email }}
-                        </td>
-                    </tr> -->
-                    <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.assigned_to_user') }}
+                            Assigned To Agent
                         </th>
                         <td>
                             {{ $ticket->assigned_to_user->name ?? '' }}

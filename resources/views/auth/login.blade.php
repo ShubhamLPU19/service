@@ -4,9 +4,8 @@
     <div class="col-md-6">
         <div class="card mx-4">
             <div class="card-body p-4">
-                <img src="http://sangamalmirah.com/wp-content/uploads/2020/11/sangam-almirah-logo.bmp" style="margin-left: 140px;">
+                <img src="{{URL::asset('/images/logo-new.bmp')}}" style="margin-left: 140px;">
                 <!-- <h1>{{ trans('panel.site_title') }}</h1> -->
-{{-- {{URL::asset('/image/propic.png')}} --}}
                 <p class="text-muted">{{ trans('global.login') }}</p>
 
                 @if(session('status'))
@@ -40,6 +39,7 @@
                         </div>
 
                         <input id="password" name="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" required placeholder="{{ trans('global.login_password') }}">
+                        <span class="input-group-text" id="basic-addon2"><i class="fa fa-fw fa-eye-slash toggle-password" aria-hidden="true"></i></span>
 
                         @if($errors->has('password'))
                             <div class="invalid-feedback">
@@ -77,4 +77,19 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).on('click', '.toggle-password', function() {
+  $(this).toggleClass("fa-eye fa-eye-slash");
+  var input = $("#password");
+  if (input.attr("type") === "password") {
+    input.attr("type", "text");
+  } else {
+    input.attr("type", "password");
+  }
+
+});
+</script>
 @endsection

@@ -22,7 +22,7 @@
                             <div class="form-group ">
                                 <label>Select Agent</label>
                                 <select name="agent" class="form-control">
-                                    <option value="">Please Select</option>
+                                    <option value="">All Agents</option>
                                     @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                     @endforeach
@@ -122,9 +122,9 @@
                     <th>
                         Assigned To Agent
                     </th>
-                    {{-- <th>
-                        Remark
-                    </th> --}}
+                    <th>
+                        Created At
+                    </th>
                     <th>
                         {{-- &nbsp; --}}
                         Action
@@ -159,14 +159,14 @@ let filters = `
       @endforeach
     </select>
   </div>
-  <div class="form-group mx-sm-3 mb-2">
+  {{-- <div class="form-group mx-sm-3 mb-2">
     <select class="form-control" name="category">
       <option value="">All categories</option>
       @foreach($categories as $category)
         <option value="{{ $category->id }}"{{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
       @endforeach
     </select>
-  </div>
+  </div> --}}
 </form>`;
 $('.card-body').on('change', 'select', function() {
   $('#filtersForm').submit();
@@ -226,9 +226,6 @@ $('.card-body').on('change', 'select', function() {
 {
     data: 'city',
     name: 'city',
-    // render: function ( data, type, row) {
-    //     return '<a href="'+row.view_link+'">'+data+' ('+row.comments_count+')</a>';
-    // }
 },
 {
     data: 'address',
@@ -259,6 +256,7 @@ $('.card-body').on('change', 'select', function() {
 { data: 'customer_name', name: 'customer_name' },
 { data: 'customer_mobile', name: 'customer_mobile' },
 { data: 'assigned_to_user_name', name: 'assigned_to_user.name' },
+{ data: 'created_at', name: 'created_at' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     order: [[ 1, 'desc' ]],

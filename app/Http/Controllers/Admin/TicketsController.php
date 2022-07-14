@@ -23,6 +23,8 @@ use App\Exports\TicketExport;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Auth;
+use Session;
+use Illuminate\Support\Facades\Redirect;
 
 class TicketsController extends Controller
 {
@@ -36,7 +38,7 @@ class TicketsController extends Controller
                 ->filterTickets($request)
                 ->select(sprintf('%s.*', (new Ticket)->table));
             $table = Datatables::of($query);
-
+            $table->editColumn('created_at', function($data){ $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y'); return $formatedDate; });
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
@@ -173,9 +175,10 @@ class TicketsController extends Controller
         $ticket->id = $reg_num;
         $ticket->customer_name = $request->customer_name;
         $ticket->customer_mobile = $request->customer_mobile;
-        $ticket->address = $request->address;
+        $ticket->customer_alternate_mobile = $request->customer_alternate_mobile;
+        $ticket->address = strtolower($request->address);
         $ticket->state = $request->state;
-        $ticket->city = $request->city;
+        $ticket->city = strtolower($request->city);
         $ticket->pincode = $request->pincode;
         $ticket->model = $request->model;
         $ticket->category = $category;
@@ -183,6 +186,7 @@ class TicketsController extends Controller
         $ticket->priority_id = $request->priority_id;
         $ticket->assigned_to_user_id = $request->assigned_to_user_id;
         $ticket->product_warranty = $request->product_warranty;
+        $ticket->created_by = Auth::user()->id;
         $ticket->save();
 
         $trimStr = ltrim($category,'Lock');
@@ -359,9 +363,10 @@ class TicketsController extends Controller
         $arr = [
             "customer_name" => $request->customer_name,
             "customer_mobile" => $request->customer_mobile,
-            "address" =>$request->address,
+            "customer_alternate_mobile" => $request->customer_alternate_mobile,
+            "address" => strtolower($request->address),
             "state" => $request->state,
-            "city" => $request->city,
+            "city" => strtolower($request->city),
             "pincode" => $request->pincode,
             "model" => $request->model,
             "category" => $category,
@@ -369,8 +374,8 @@ class TicketsController extends Controller
             "priority_id" => $request->priority_id,
             "assigned_to_user_id" => $request->assigned_to_user_id,
             "product_warranty" => $request->product_warranty,
+            "updated_by" => Auth::user()->id,
         ];
-        Ticket::where(["id"=>$id])->update($arr);
 
         $ticketAuditLog = new  TicketAuditLog;
         $ticketAuditLog->ticket_id = $id;
@@ -540,6 +545,7 @@ class TicketsController extends Controller
                 }
             }
         }
+        Ticket::where(["id"=>$id])->update($arr);
         return redirect()->route('admin.tickets.index');
     }
 
@@ -587,7 +593,6 @@ class TicketsController extends Controller
             'ticket_id'   => $ticket->id,
         ]);
         // dd("testing");
-        Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status]);
         $ticket = Ticket::where(["id"=>$request->ticket_id])->first();
         $trimStr = ltrim($ticket->category,'Lock');
         $str = str_replace("_"," ", $ticket->category);
@@ -599,8 +604,10 @@ class TicketsController extends Controller
         $ticketAuditLog->updated_by = Auth::user()->id;
         $ticketAuditLog->status = $request->status;
         $ticketAuditLog->save();
+        // dd($request->status,$ticket->status_id);
         if($ticket->status_id != $request->status)
         {
+
             if($request->status == 3 || $request->status == 5)
             {
                 $status = Status::where(["id"=>$request->status_id])->first();
@@ -652,7 +659,7 @@ class TicketsController extends Controller
                 $otp = random_int(100000, 999999);
                 Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status,"otp"=>$otp]);
                 $ticket->load('status', 'priority', 'assigned_to_user');
-                $statuses = Status::all();
+                $statuses = Status::where("id","!=",1)->get();
                 $ticket = Ticket::where(["id"=>$request->ticket_id])->first();
                 if(!empty($ticket) )
                 {
@@ -700,9 +707,11 @@ class TicketsController extends Controller
                         $responseBody = json_decode($response->getBody(), true);
                     }
                 }
+                Session::put('status','OTP has been sent on customer Whatsapp.');
                 return view('admin.tickets.otp', compact('ticket','statuses'));
             }
         }
+        Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>$request->status]);
         return redirect()->back()->withStatus('Your comment added successfully');
     }
 
@@ -721,7 +730,10 @@ class TicketsController extends Controller
         }
         else
         {
-            \Redirect::back()->withMessage('Profile saved!');
+            $statuses = Status::where("id","!=",1)->get();
+            $ticket = Ticket::where(["id"=>$request->ticket_id])->first();
+            Session::put('status','Please enter correct OTP.');
+            return view('admin.tickets.otp', compact('ticket','statuses'));
         }
 
     }
