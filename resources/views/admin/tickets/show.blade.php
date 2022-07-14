@@ -57,6 +57,14 @@
                     </tr>
                     <tr>
                         <th>
+                            Product Warranty
+                        </th>
+                        <td>
+                            {{ strtoupper($ticket->product_warranty) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             State
                         </th>
                         <td>
