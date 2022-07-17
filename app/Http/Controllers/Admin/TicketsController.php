@@ -35,6 +35,7 @@ class TicketsController extends Controller
         if ($request->ajax()) {
             $query = Ticket::with(['status', 'priority','assigned_to_user', 'comments'])
                 // ->where("tickets.status_id","!=",6)
+                ->orderBy('tickets.created_at','DESC')
                 ->filterTickets($request)
                 ->select(sprintf('%s.*', (new Ticket)->table));
             $table = Datatables::of($query);
@@ -726,6 +727,12 @@ class TicketsController extends Controller
         if($ticket->otp == $request->otp)
         {
             Ticket::where(['id'=>$request->ticket_id])->update(["status_id"=>6,"otp"=>null]);
+            $ticketAuditLog = new  TicketAuditLog;
+            $ticketAuditLog->ticket_id = $request->ticket_id;
+            $ticketAuditLog->created_by = Auth::user()->id;
+            $ticketAuditLog->updated_by = Auth::user()->id;
+            $ticketAuditLog->status = 6;
+            $ticketAuditLog->save();
             return redirect()->route('admin.tickets.index')->withStatus('Ticket is closed successfully');
         }
         else
