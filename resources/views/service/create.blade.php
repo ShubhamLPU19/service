@@ -1,11 +1,14 @@
 @extends('layouts.auth')
 @section('content')
-
 <div class="card">
     <div class="card-header text-center bg-dark text-white">
         Register Your Complaint
     </div>
-
+    @if(session('status'))
+    <div class="alert alert-success" role="alert">
+        {{ session('status') }}
+    </div>
+    @endif
     <div class="card-body">
         <form action="{{ route("storeComplaint") }}" method="POST" onSubmit="return confirm('Please verify the given data.') " enctype="multipart/form-data">
             @csrf
@@ -79,6 +82,19 @@
                     </em>
                 @endif
             </div>
+            <div class="form-group {{ $errors->has('product_warranty') ? 'has-error' : '' }}">
+                <label for="product_warranty">Product Warranty<span style="color: red;">*</span></label>
+                <select name="product_warranty" id="product_warranty" class="form-control" required>
+                    <option value="">Select Warranty</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+                @if($errors->has('product_warranty'))
+                    <em class="invalid-feedback">
+                        {{ $errors->first('product_warranty') }}
+                    </em>
+                @endif
+            </div>
             <div class="form-group {{ $errors->has('model') ? 'has-error' : '' }}">
                 <label for="title">Model </label>
                 <input type="text" id="model" name="model" class="form-control" value="{{ old('model', isset($ticket) ? $ticket->model : '') }}">
@@ -93,7 +109,7 @@
                     <label><strong>Lock</strong></label>
                     <select name="category1" id="category1" class="form-control select2">
                         <option value="">Please Select</option>
-                        <option value="Big Lock">Big Lock</option>
+                        <option value="Main Lock">Main Lock</option>
                         <option value="Small Lock">Small Lock</option>
                 </select>
                 </div>
@@ -112,7 +128,7 @@
                 </select>
                 </div>
                 <div class="col-sm-4">
-                    <label><strong>Rust</strong></label>
+                    <label><strong>Body</strong></label>
                     <select name="category3" id="category3" class="form-control select2">
                     <option value="">Please Select</option>
                     <option value="Rust">Rust</option>

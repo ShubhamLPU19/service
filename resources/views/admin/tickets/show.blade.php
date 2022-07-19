@@ -103,12 +103,17 @@
                             {{ $ticket->priority->name ?? '' }}
                         </td>
                     </tr>
+                    @php
+                        $trimStr = ltrim($ticket->category,'Lock');
+                        $str = str_replace("_"," ", $trimStr);
+                        $category = ltrim($str);
+                    @endphp
                     <tr>
                         <th>
                             Issue
                         </th>
                         <td>
-                            {{ $ticket->category ?? '' }}
+                            {{ $category ?? '' }}
                         </td>
                     </tr>
                     <tr>

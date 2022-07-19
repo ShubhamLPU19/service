@@ -34,7 +34,7 @@ class TicketsController extends Controller
     {
         if ($request->ajax()) {
             $query = Ticket::with(['status', 'priority','assigned_to_user', 'comments'])
-                // ->where("tickets.status_id","!=",6)
+                ->where("tickets.status_id","!=",6)
                 ->orderBy('tickets.created_at','DESC')
                 ->filterTickets($request)
                 ->select(sprintf('%s.*', (new Ticket)->table));
@@ -82,7 +82,10 @@ class TicketsController extends Controller
             });
 
             $table->addColumn('category', function ($row) {
-                return $row->category ? $row->category : '';
+                $trimStr = ltrim($row->category,'Lock');
+                $str = str_replace("_"," ", $trimStr);
+                $category = ltrim($str);
+                return $row->category ? $category : '';
             });
             $table->addColumn('assigned_to_user_name', function ($row) {
                 return $row->assigned_to_user ? $row->assigned_to_user->name : '';
@@ -91,10 +94,6 @@ class TicketsController extends Controller
             $table->addColumn('remark', function ($row) {
                 return $row->remark ? $row->remark : '';
             });
-
-            // $table->addColumn('comments_count', function ($row) {
-            //     return $row->comments->count();
-            // });
 
             $table->addColumn('view_link', function ($row) {
                 return route('admin.tickets.show', $row->id);
@@ -116,7 +115,7 @@ class TicketsController extends Controller
     {
         abort_if(Gate::denies('ticket_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $statuses = Status::where("id","!=",1)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $statuses = Status::where("id","=",2)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $priorities = Priority::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -171,6 +170,11 @@ class TicketsController extends Controller
         $month = date('m');
         $day = date('d');
 
+        $ticketsExist = Ticket::where(["customer_mobile"=>$request->customer_mobile])->whereIn('status_id',[1,2,3,4,5])->first();
+        if(!empty($ticketsExist))
+        {
+            return Redirect::back()->withErrors(['status' => 'Complaint is already registerd  with given mobile number.']);
+        }
         $reg_num = $year . $month . $day . $number;
         $ticket = new Ticket();
         $ticket->id = $reg_num;

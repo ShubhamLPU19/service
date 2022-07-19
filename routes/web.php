@@ -23,6 +23,7 @@ Route::post('tickets/comment/{ticket}', 'TicketController@storeComment')->name('
 Route::resource('tickets', 'TicketController')->only(['show', 'create', 'store']);
 Route::get('complaint','ServiceController@createComplaint')->name('createComplaint');
 Route::post('complaint/store','ServiceController@storeComplaint')->name('storeComplaint');
+Route::post('thank-you','ServiceController@thanku')->name('thanku');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');

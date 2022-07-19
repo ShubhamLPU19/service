@@ -76,6 +76,11 @@
     </div>
 </div>
 @endif
+@if(session('status'))
+    <div class="alert alert-success" role="alert">
+        {{ session('status') }}
+    </div>
+@endif
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.ticket.title_singular') }} {{ trans('global.list') }}
@@ -159,14 +164,14 @@ let filters = `
       @endforeach
     </select>
   </div>
-  {{-- <div class="form-group mx-sm-3 mb-2">
-    <select class="form-control" name="category">
-      <option value="">All categories</option>
-      @foreach($categories as $category)
-        <option value="{{ $category->id }}"{{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+  <div class="form-group mx-sm-3 mb-2">
+    <select class="form-control" name="assigned_to_user_id">
+      <option value="">All Agents</option>
+      @foreach($users as $user)
+        <option value="{{ $user->id }}"{{ request('assigned_to_user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
       @endforeach
     </select>
-  </div> --}}
+  </div>
 </form>`;
 $('.card-body').on('change', 'select', function() {
   $('#filtersForm').submit();
@@ -213,12 +218,12 @@ $('.card-body').on('change', 'select', function() {
       data: {
         'status': searchParams.get('status'),
         'priority': searchParams.get('priority'),
-        'category': searchParams.get('category')
+        'assigned_to_user_id': searchParams.get('assigned_to_user_id')
       }
     },
     columns: [
       { data: 'placeholder', name: 'placeholder' },
-{ data: 'id', name: 'id' },
+      { data: 'id', name: 'id' },
 {
     data: 'state',
     name: 'state',

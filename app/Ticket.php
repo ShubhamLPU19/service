@@ -100,6 +100,11 @@ class Ticket extends Model implements HasMedia
                 $query->whereHas('status', function($query) {
                     $query->whereId(request()->input('status'));
                 });
+            })
+            ->when(request()->input('assigned_to_user_id'), function($query) {
+                $query->whereHas('assigned_to_user', function($query) {
+                    $query->whereId(request()->input('assigned_to_user_id'));
+                });
             });
     }
 
