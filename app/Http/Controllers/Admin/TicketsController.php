@@ -115,7 +115,7 @@ class TicketsController extends Controller
     {
         abort_if(Gate::denies('ticket_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $statuses = Status::where("id","=",2)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $statuses = Status::where("id","=",7)->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $priorities = Priority::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -197,7 +197,7 @@ class TicketsController extends Controller
         $trimStr = ltrim($category,'Lock');
         $str = str_replace("_"," ", $trimStr);
         $category = ltrim($str);
-        if($request->status_id == 2)
+        if($request->status_id == 7)
         {
             //Add customer
             if(!empty($ticket))
@@ -244,56 +244,56 @@ class TicketsController extends Controller
                 }
             }
             // Add agent
-            if(!empty($ticket))
-            {
-                // dd("Hi Shubham Kumar");
-                $agent = User::where(["id"=>$request->assigned_to_user_id])->first();
-                $headers = array(
-                    "Content-Type" => 'application/json',
-                    "Authorization"=> 'Basic WmN1a0VfLUJEYmdEZXVnMHhVVlZfYVNueFdsaTE1Z2pHSk12M1pDSjA4QTo='
-                );
-                $apiURL = 'https://api.interakt.ai/v1/public/track/users/';
-                $postInput = array(
-                    "phoneNumber"=> $agent->mobile,
-                    "countryCode"=> "+91",
-                    "traits"=> array(
-                        "name"=> $agent->name,
-                        "phoneNumber"=> $agent->mobile,
-                        "workLocation" => $agent->work_location,
-                        "customerName" => $request->customer_name,
-                        "customerMobile" => $request->customer_mobile,
-                        "address" => $request->address,
-                        "ticket_id"=> $ticket->id,
-                        // "agent_name" => @$agent->name,
-                        // "agent_contact" => @$agent->mobile,
-                        "issue" => $category,
-                        "createdAt"=> date("Y-m-d"),
-                    )
-                );
-                $response = Http::withHeaders($headers)->post($apiURL, $postInput);
-                $responseBody = json_decode($response->getBody(), true);
-                if($responseBody['result'])
-                {
-                    $eventApiURL = 'https://api.interakt.ai/v1/public/track/events/';
-                    $postEventInput = array(
-                        "phoneNumber"=> $agent->mobile,
-                        "countryCode"=> "+91",
-                        "event"=> "Agent Notify",
-                        "traits"=> array(
-                            "ticket_id"=> $ticket->id,
-                            // "agent_name" => @$agent->name,
-                            // "agent_contact" => @$agent->mobile,
-                            "customer_name" => $request->customer_name,
-                            "customerMobile" => $request->customer_mobile,
-                            "address" => $request->address,
-                            "issue" => $category,
-                        )
-                    );
+            // if(!empty($ticket))
+            // {
+            //     // dd("Hi Shubham Kumar");
+            //     $agent = User::where(["id"=>$request->assigned_to_user_id])->first();
+            //     $headers = array(
+            //         "Content-Type" => 'application/json',
+            //         "Authorization"=> 'Basic WmN1a0VfLUJEYmdEZXVnMHhVVlZfYVNueFdsaTE1Z2pHSk12M1pDSjA4QTo='
+            //     );
+            //     $apiURL = 'https://api.interakt.ai/v1/public/track/users/';
+            //     $postInput = array(
+            //         "phoneNumber"=> $agent->mobile,
+            //         "countryCode"=> "+91",
+            //         "traits"=> array(
+            //             "name"=> $agent->name,
+            //             "phoneNumber"=> $agent->mobile,
+            //             "workLocation" => $agent->work_location,
+            //             "customerName" => $request->customer_name,
+            //             "customerMobile" => $request->customer_mobile,
+            //             "address" => $request->address,
+            //             "ticket_id"=> $ticket->id,
+            //             // "agent_name" => @$agent->name,
+            //             // "agent_contact" => @$agent->mobile,
+            //             "issue" => $category,
+            //             "createdAt"=> date("Y-m-d"),
+            //         )
+            //     );
+            //     $response = Http::withHeaders($headers)->post($apiURL, $postInput);
+            //     $responseBody = json_decode($response->getBody(), true);
+            //     if($responseBody['result'])
+            //     {
+            //         $eventApiURL = 'https://api.interakt.ai/v1/public/track/events/';
+            //         $postEventInput = array(
+            //             "phoneNumber"=> $agent->mobile,
+            //             "countryCode"=> "+91",
+            //             "event"=> "Agent Notify",
+            //             "traits"=> array(
+            //                 "ticket_id"=> $ticket->id,
+            //                 // "agent_name" => @$agent->name,
+            //                 // "agent_contact" => @$agent->mobile,
+            //                 "customer_name" => $request->customer_name,
+            //                 "customerMobile" => $request->customer_mobile,
+            //                 "address" => $request->address,
+            //                 "issue" => $category,
+            //             )
+            //         );
 
-                    $response = Http::withHeaders($headers)->post($eventApiURL, $postEventInput);
-                    $responseBody = json_decode($response->getBody(), true);
-                }
-            }
+            //         $response = Http::withHeaders($headers)->post($eventApiURL, $postEventInput);
+            //         $responseBody = json_decode($response->getBody(), true);
+            //     }
+            // }
         }
 
         $ticketAuditLog = new  TicketAuditLog;
@@ -395,6 +395,55 @@ class TicketsController extends Controller
         $ticket = Ticket::where(["id"=>$id])->first();
         if($ticket->status_id != $request->status_id)
         {
+            if($request->status_id == 2)
+            {
+                $agent = User::where(["id"=>$request->assigned_to_user_id])->first();
+                $headers = array(
+                    "Content-Type" => 'application/json',
+                    "Authorization"=> 'Basic WmN1a0VfLUJEYmdEZXVnMHhVVlZfYVNueFdsaTE1Z2pHSk12M1pDSjA4QTo='
+                );
+                $apiURL = 'https://api.interakt.ai/v1/public/track/users/';
+                $postInput = array(
+                    "phoneNumber"=> $agent->mobile,
+                    "countryCode"=> "+91",
+                    "traits"=> array(
+                        "name"=> $agent->name,
+                        "phoneNumber"=> $agent->mobile,
+                        "workLocation" => $agent->work_location,
+                        "customerName" => $request->customer_name,
+                        "customerMobile" => $request->customer_mobile,
+                        "address" => $request->address,
+                        "ticket_id"=> $ticket->id,
+                        // "agent_name" => @$agent->name,
+                        // "agent_contact" => @$agent->mobile,
+                        "issue" => $category,
+                        "createdAt"=> date("Y-m-d"),
+                    )
+                );
+                $response = Http::withHeaders($headers)->post($apiURL, $postInput);
+                $responseBody = json_decode($response->getBody(), true);
+                if($responseBody['result'])
+                {
+                    $eventApiURL = 'https://api.interakt.ai/v1/public/track/events/';
+                    $postEventInput = array(
+                        "phoneNumber"=> $agent->mobile,
+                        "countryCode"=> "+91",
+                        "event"=> "Agent Notify",
+                        "traits"=> array(
+                            "ticket_id"=> $ticket->id,
+                            // "agent_name" => @$agent->name,
+                            // "agent_contact" => @$agent->mobile,
+                            "customer_name" => $request->customer_name,
+                            "customerMobile" => $request->customer_mobile,
+                            "address" => $request->address,
+                            "issue" => $category,
+                        )
+                    );
+
+                    $response = Http::withHeaders($headers)->post($eventApiURL, $postEventInput);
+                    $responseBody = json_decode($response->getBody(), true);
+                }
+            }
             if($request->status_id == 3 || $request->status_id == 5)
             {
                 $status = Status::where(["id"=>$request->status_id])->first();
